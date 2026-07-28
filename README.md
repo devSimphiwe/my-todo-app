@@ -14,6 +14,28 @@ pnpm dev
 bun dev
 ```
 
+### Node.js Version Requirement
+
+This project requires **Node.js v20.9.0 or higher** (Next.js requirement).
+
+If you are running an older Node.js version, update it using `nvm` (Node Version Manager):
+
+```bash
+# 1. Install nvm (if not already installed)
+curl -o- [https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh](https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh) | bash
+source ~/.bashrc
+
+# 2. Install and switch to Node 20
+nvm install 20
+nvm use 20
+nvm alias default 20
+
+# 3. Verify installation
+node -v
+
+# 4. To run
+npm run dev
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
