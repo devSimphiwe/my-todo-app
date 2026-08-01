@@ -28,7 +28,7 @@ Make sure you have [Git](https://git-scm.com/) and [Node.js](https://nodejs.org/
 Open your terminal and run the following command:
 
 ```bash
-git clone [https://github.com/devSimphiwe/my-todo-app.git](https://github.com/devSimphiwe/my-todo-app.git)
+git clone https://github.com/devSimphiwe/my-todo-app.git
 ````
 ### Step 2: Navigate to the Project Directory
 ````bash

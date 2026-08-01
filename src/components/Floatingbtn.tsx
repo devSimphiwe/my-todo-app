@@ -29,11 +29,11 @@ export default function FloatingButton() {
           h-20
           w-20
           rounded-full
-          bg-emerald-600
+          bg-cyan-950
           text-white
           text-5xl
           shadow-lg
-          hover:bg-emerald-700
+          hover:bg-cyan-700
           transition-colors
           flex
           items-center

@@ -9,38 +9,61 @@ export enum Topic {
   LEARNING = "LEARNING",
 }
 
-// Props interface for submitting initial values or receiving standard TaskCard props
 export interface TaskFormData {
+  id?: number;
   title: string;
   topic: Topic;
   description: string;
   dueDate: string;
+  status?: string;
+  archived?: number | boolean;
 }
 
+// 1. ADD onClose AND onSuccess TO THE PROPS INTERFACE
 interface TaskFormProps {
-  initialData?: Partial<TaskFormData>;
+  initialData?: Partial<TaskFormData> | { topic?: string; [key: string]: any };
   onSubmit?: (data: TaskFormData) => void;
+  onClose?: () => void;      // <--- Added here
+  onSuccess?: () => void;    // <--- Added here
 }
 
-export default function TaskForm({ initialData, onSubmit }: TaskFormProps) {
+export default function TaskForm({
+  initialData,
+  onSubmit,
+  onClose,
+  onSuccess,
+}: TaskFormProps) {
   const [formData, setFormData] = useState<TaskFormData>({
+    id: initialData?.id,
     title: initialData?.title || "",
-    topic: initialData?.topic || Topic.WORK,
+    topic: (initialData?.topic as Topic) || Topic.WORK,
     description: initialData?.description || "",
     dueDate: initialData?.dueDate || "",
+    status: initialData?.status || "To-do",
+    archived: initialData?.archived,
   });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "topic" ? (value as Topic) : value,
+    }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Call custom submit handler if provided
     if (onSubmit) {
       onSubmit(formData);
+    }
+
+    // Trigger success callback if provided
+    if (onSuccess) {
+      onSuccess();
     }
   };
 
@@ -116,13 +139,24 @@ export default function TaskForm({ initialData, onSubmit }: TaskFormProps) {
           />
         </div>
 
-        {/* Submit Button */}
-        <button
-          type="submit"
-          className="mt-2 w-full rounded-xl bg-[#2a2a2a] py-3 text-sm font-medium text-white transition hover:bg-[#1a1a1a] active:scale-[0.99]"
-        >
-          Submit
-        </button>
+        {/* Submit & Optional Cancel Buttons */}
+        <div className="flex gap-2 mt-2">
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-1/3 rounded-xl border border-gray-200 py-3 text-sm font-medium text-gray-600 transition hover:bg-gray-100"
+            >
+              Cancel
+            </button>
+          )}
+          <button
+            type="submit"
+            className="flex-1 rounded-xl bg-[#2a2a2a] py-3 text-sm font-medium text-white transition hover:bg-[#1a1a1a] active:scale-[0.99]"
+          >
+            Submit
+          </button>
+        </div>
       </form>
     </div>
   );
