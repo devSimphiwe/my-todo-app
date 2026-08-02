@@ -53,12 +53,12 @@ export default function TaskForm({
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Call custom submit handler if provided
     if (onSubmit) {
-      onSubmit(formData);
+      await onSubmit(formData);
     }
 
     // Trigger success callback if provided
@@ -69,7 +69,9 @@ export default function TaskForm({
 
   return (
     <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+      
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        
         {/* Title Input */}
         <div className="flex flex-col gap-1.5">
           <label htmlFor="title" className="text-sm font-medium text-gray-800">

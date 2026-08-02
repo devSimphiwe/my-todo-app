@@ -3,16 +3,35 @@
 import React, { useState } from "react";
 import TaskForm, { TaskFormData } from "./TaskForm"; // Adjust import path if needed
 
-export default function FloatingButton() {
+interface FloatingButtonProps {
+  onTaskCreated?: () => void;
+}
+
+export default function FloatingButton({ onTaskCreated }: FloatingButtonProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => setIsOpen(false);
 
-  const handleFormSubmit = (data: TaskFormData) => {
-    console.log("Form Submitted:", data);
-    // Add your logic to save the task here
-    handleClose(); // Close modal after submission
+  const handleFormSubmit = async (data: TaskFormData) => {
+    try {
+      const res = await fetch("/api/tasks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) throw new Error("Failed to create task");
+
+      // Notify parent page to reload/refresh list
+      if (onTaskCreated) {
+        onTaskCreated();
+      }
+
+      handleClose(); // Close modal on success
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -65,7 +84,7 @@ export default function FloatingButton() {
             </button>
 
             {/* Task Form Component */}
-            <TaskForm onSubmit={handleFormSubmit} />
+            <TaskForm onSubmit={handleFormSubmit} onClose={handleClose} />
           </div>
         </div>
       )}

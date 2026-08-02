@@ -1,45 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import TaskCard from "../components/TaskCard";
 import FloatingButton from "../components/Floatingbtn";
 import FilterIconButton, { FilterState } from "../components/FilterIconBtn";
 
-const initialTasks = [
-  {
-    id: 1,
-    title: "Complete React Assignment",
-    topic: "Learning",
-    description:
-      "Finish building the Todo application using Next.js and Tailwind CSS.",
-    dueDate: "31 July 2026",
-    status: "To-Do",
-    archived: false,
-  },
-  {
-    id: 2,
-    title: "Study Database Design",
-    topic: "Learning",
-    description:
-      "Review Prisma models, relationships, and migrations for PostgreSQL.",
-    dueDate: "2 August 2026",
-    status: "In-Progress",
-    archived: false,
-  },
-  {
-    id: 3,
-    title: "Go Grocery Shopping",
-    topic: "Personal",
-    description:
-      "Buy milk, eggs, bread, chicken, vegetables, and fruit for the week.",
-    dueDate: "30 July 2026",
-    status: "Completed",
-    archived: true,
-  },
-];
-
 export default function Home() {
-  const [tasks, setTasks] = useState(initialTasks);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [showArchived, setShowArchived] = useState(false);
 
   // Filter state
@@ -62,6 +29,26 @@ export default function Home() {
       )
     );
   };
+
+  async function loadTasks() {
+        try {
+          // 1. Fetch using relative URL
+          const res = await fetch('/api/tasks'); 
+          if (!res.ok) throw new Error('Failed to fetch');
+
+          // 2. Parse JSON body
+          const data = await res.json(); 
+          setTasks(data);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+  useEffect(() => {
+    
+      loadTasks();
+    }, []);
+
 
   // Filter tasks based on archive state + dropdown filters
   const visibleTasks = tasks.filter((task) => {
@@ -105,6 +92,7 @@ export default function Home() {
 
     return true;
   });
+
 
   return (
     <main className="flex min-h-screen flex-col items-center gap-6 bg-gray-100 p-8">
@@ -158,7 +146,7 @@ export default function Home() {
         </p>
       )}
 
-      <FloatingButton />
+      <FloatingButton onTaskCreated={loadTasks} />
     </main>
   );
 }
