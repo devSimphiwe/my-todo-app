@@ -72,17 +72,55 @@ export default function TaskCard({
     status !== "Completed" &&
     !isArchived;
 
-  const handleStatusSelect = (newStatus: Status) => {
+  const handleStatusSelect = async (newStatus: Status) => {
     setIsStatusOpen(false);
-    if (onStatusChange) {
-      onStatusChange(id, newStatus);
+
+    try {
+      // API call to update status
+      const res = await fetch("/api/tasks", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id,
+          status: newStatus
+        }),
+      });
+
+      if (!res.ok) throw new Error("Failed to update status");
+
+      // Notify parent to refresh list
+      if (onTaskUpdated) {
+        onTaskUpdated();
+      }
+      if (onStatusChange) {
+        onStatusChange(id, newStatus);
+      }
+    } catch (error) {
+      console.error("Error updating status:", error);
     }
   };
 
-  const handleArchiveToggle = () => {
+  const handleArchiveToggle = async () => {
     setIsStatusOpen(false);
-    if (onToggleArchive) {
-      onToggleArchive(id);
+
+    try {
+      // UPDATED ROUTE HERE 
+      const res = await fetch('/api/archive', {
+        method: 'PATCH', // Or 'POST' / 'PUT' depending on your endpoint handler
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to toggle archive status');
+      }
+
+      // Refresh parent component
+      if (onTaskUpdated) onTaskUpdated();
+      if (onToggleArchive) onToggleArchive(id);
+    } catch (error) {
+      console.error('Error toggling archive:', error);
     }
   };
 

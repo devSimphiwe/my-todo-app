@@ -30,25 +30,23 @@ export default function Home() {
     );
   };
 
-  async function loadTasks() {
-        try {
-          // 1. Fetch using relative URL
-          const res = await fetch('/api/tasks'); 
-          if (!res.ok) throw new Error('Failed to fetch');
+  async function loadTasks(archived = showArchived) {
+  try {
+    const url = archived ? '/api/archive' : '/api/tasks';
+    const res = await fetch(url);
+    
+    if (!res.ok) throw new Error('Failed to fetch');
 
-          // 2. Parse JSON body
-          const data = await res.json(); 
-          setTasks(data);
-        } catch (err) {
-          console.error(err);
-        }
-      }
+    const data = await res.json(); 
+    setTasks(data);
+  } catch (err) {
+    console.error(err);
+  }
+}
 
   useEffect(() => {
-    
-      loadTasks();
-    }, []);
-
+  loadTasks(showArchived);
+}, [showArchived]);
 
   // Filter tasks based on archive state + dropdown filters
   const visibleTasks = tasks.filter((task) => {
@@ -113,7 +111,7 @@ export default function Home() {
         {/* FILTER ICON BUTTON */}
         <FilterIconButton
           topics={availableTopics}
-          statuses={["To-Do", "In-Progress", "Completed"]}
+          statuses={["To-do", "In-Progress", "Completed"]}
           initialFilters={filters}
           onFilterChange={setFilters}
         />
@@ -135,7 +133,7 @@ export default function Home() {
           dueDate={task.dueDate}
           status={task.status}
           archived={task.archived}
-          onToggleArchive={handleToggleArchive}
+          onTaskUpdated={loadTasks} // <--- Pass loadTasks here!
         />
       ))}
 

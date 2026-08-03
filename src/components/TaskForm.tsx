@@ -56,17 +56,36 @@ export default function TaskForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Call custom submit handler if provided
-    if (onSubmit) {
-      await onSubmit(formData);
-    }
+    try {
+      const isEditing = Boolean(formData.id);
+      const method = isEditing ? "PATCH" : "POST";
 
-    // Trigger success callback if provided
-    if (onSuccess) {
-      onSuccess();
+      // 2. Perform API call to /api/tasks
+      const res = await fetch("/api/tasks", {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || `Failed to ${isEditing ? "update" : "create"} task`);
+      }
+
+      // 3. Call custom submit handler if passed from parent
+      if (onSubmit) {
+        await onSubmit(formData);
+      }
+
+      // 4. Trigger success callback (closes modal & refetches data in page.tsx)
+      if (onSuccess) {
+        onSuccess();
+      }
+    } catch (error) {
+      console.error("Error submitting task form:", error);
+      alert(error instanceof Error ? error.message : "Something went wrong!");
     }
   };
-
   return (
     <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
       
