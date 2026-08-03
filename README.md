@@ -53,7 +53,7 @@ If you are running an older Node.js version, update it using `nvm` (Node Version
 
 ```bash
 # 1. Install nvm (if not already installed)
-curl -o- [https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh](https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh) | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 source ~/.bashrc
 
 # 2. Install and switch to Node 20
