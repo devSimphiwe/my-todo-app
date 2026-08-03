@@ -60,7 +60,7 @@ export default function TaskForm({
       const isEditing = Boolean(formData.id);
       const method = isEditing ? "PATCH" : "POST";
 
-      // 2. Perform API call to /api/tasks
+      // 1. Single API call to create or edit the task
       const res = await fetch("/api/tasks", {
         method,
         headers: { "Content-Type": "application/json" },
@@ -72,12 +72,7 @@ export default function TaskForm({
         throw new Error(errorData.error || `Failed to ${isEditing ? "update" : "create"} task`);
       }
 
-      // 3. Call custom submit handler if passed from parent
-      if (onSubmit) {
-        await onSubmit(formData);
-      }
-
-      // 4. Trigger success callback (closes modal & refetches data in page.tsx)
+      // 3. Trigger success callback to close modal and reload list
       if (onSuccess) {
         onSuccess();
       }
