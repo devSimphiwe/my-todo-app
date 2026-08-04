@@ -1,13 +1,17 @@
 "use client";
 
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import TaskCard from "../components/TaskCard";
 import FloatingButton from "../components/Floatingbtn";
 import FilterIconButton, { FilterState } from "../components/FilterIconBtn";
+import SortIconBtn, { SortOrder } from "../components/SortIconBtn"; // <--- Import Sort button
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [showArchived, setShowArchived] = useState(false);
+
+  // 1. Sort state (defaults to ascending)
+  const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
 
   // Filter state
   const [filters, setFilters] = useState<FilterState>({
@@ -21,7 +25,6 @@ export default function Home() {
     new Set(tasks.map((task) => task.topic))
   );
 
-  // Toggle archive status for a task
   const handleToggleArchive = (id: number) => {
     setTasks((prevTasks) =>
       prevTasks.map((t) =>
@@ -31,40 +34,41 @@ export default function Home() {
   };
 
   async function loadTasks(archived = showArchived) {
-  try {
-    const url = archived ? '/api/archive' : '/api/tasks';
-    const res = await fetch(url);
-    
-    if (!res.ok) throw new Error('Failed to fetch');
+    try {
+      const url = archived ? '/api/archive' : '/api/tasks';
+      const res = await fetch(url);
+      
+      if (!res.ok) throw new Error('Failed to fetch');
 
-    const data = await res.json(); 
-    setTasks(data);
-  } catch (err) {
-    console.error(err);
+      const data = await res.json(); 
+      setTasks(data);
+    } catch (err) {
+      console.error(err);
+    }
   }
-}
 
   useEffect(() => {
-  loadTasks(showArchived);
-}, [showArchived]);
+    loadTasks(showArchived);
+  }, [showArchived]);
 
-  // Filter tasks based on archive state + dropdown filters
-  const visibleTasks = tasks.filter((task) => {
-    // 1. Archive filter
+  // Toggle sort order between ascending and descending
+  const toggleSortOrder = () => {
+    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+  };
+
+  // 2. Filter tasks based on archive state + dropdown filters
+  const filteredTasks = tasks.filter((task) => {
     const matchesArchive = showArchived ? task.archived : !task.archived;
     if (!matchesArchive) return false;
 
-    // 2. Topic filter
     if (filters.topic !== "all" && task.topic !== filters.topic) {
       return false;
     }
 
-    // 3. Status filter
     if (filters.status !== "all" && task.status !== filters.status) {
       return false;
     }
 
-    // 4. Date filter logic
     if (filters.dateFilter !== "all") {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -91,10 +95,21 @@ export default function Home() {
     return true;
   });
 
+  // 3. Sort filtered tasks in-memory without calling API
+  const visibleTasks = [...filteredTasks].sort((a, b) => {
+    const dateA = new Date(a.dueDate).getTime();
+    const dateB = new Date(b.dueDate).getTime();
+
+    // Handle missing/invalid dates by sending them to the end
+    if (isNaN(dateA)) return 1;
+    if (isNaN(dateB)) return -1;
+
+    return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+  });
 
   return (
     <main className="flex min-h-screen flex-col items-center gap-6 bg-gray-100 p-8">
-      {/* ACTION BAR: ARCHIVE BUTTON + FILTER BUTTON NEXT TO IT */}
+      {/* ACTION BAR: ARCHIVE BUTTON + FILTER BUTTON + SORT BUTTON */}
       <div className="flex w-full max-w-md items-center gap-3">
         <button
           type="button"
@@ -115,6 +130,12 @@ export default function Home() {
           initialFilters={filters}
           onFilterChange={setFilters}
         />
+
+        {/* SORT ICON BUTTON */}
+        <SortIconBtn
+          sortOrder={sortOrder}
+          onToggleSort={toggleSortOrder}
+        />
       </div>
 
       {/* VIEW TITLE HEADER */}
@@ -133,14 +154,14 @@ export default function Home() {
           dueDate={task.dueDate}
           status={task.status}
           archived={task.archived}
-          onTaskUpdated={loadTasks} // <--- Pass loadTasks here!
+          onTaskUpdated={loadTasks}
         />
       ))}
 
       {/* EMPTY STATE MESSAGE */}
       {visibleTasks.length === 0 && (
         <p className="mt-8 text-sm text-gray-400">
-          No {showArchived ? "archived" : "active"} tasks match your criteria.
+          No {showArchived ? "archived" : "active"} tasks.
         </p>
       )}
 
