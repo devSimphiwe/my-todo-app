@@ -24,10 +24,6 @@ nvm alias default 20
 # Verify installation
 node -v
 
-# Start the development server
-npm run dev
-```
-
 ---
 
 
