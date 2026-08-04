@@ -23,7 +23,7 @@ nvm alias default 20
 
 # Verify installation
 node -v
-
+````
 ---
 
 
