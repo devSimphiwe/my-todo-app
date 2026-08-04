@@ -25,5 +25,9 @@ Icons were created with figma ai:
   
 commit 16  
 [Public link: Client-Side Task Sorting Integration](https://share.gemini.google/25MCRyeqaIzZ)  
+
+commit 26
+[Testing Next.js Todo App with SQLite](https://share.gemini.google/UL4bNryPbwzs)
+
   
 **AI Declaration:** This was edited and reviewed with Gemini.  
