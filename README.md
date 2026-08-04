@@ -92,3 +92,21 @@ This project uses the following core packages:
 | `react`          | Builds the user interface using reusable components. |
 | `react-dom`      | Renders React components in the browser.             |
 | `better-sqlite3` | Connects the application to the SQLite database.     |
+
+---
+
+# Database Design
+This project only uses 1 table i.e. tasks:
+
+
+| Column        | Data Type | Description                                                                                                                                                                                                                            |
+| ------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`          | `INTEGER` | A unique identifier for each task. It is the **primary key** and is automatically incremented (`AUTOINCREMENT`) whenever a new task is added.                                                                                          |
+| `title`       | `TEXT`    | Stores the title of the task. It is marked `NOT NULL`, meaning every task must have a title.                                                                                                                                           |
+| `description` | `TEXT`    | Stores additional details about the task. This field is optional because it is not marked `NOT NULL`.                                                                                                                                  |
+| `topic`       | `TEXT`    | Represents the category of the task. It cannot be empty (`NOT NULL`) and defaults to `'PERSONAL'`. The `CHECK` constraint ensures that only one of these values can be stored: `WORK`, `PERSONAL`, `FINANCE`, `HEALTH`, or `LEARNING`. |
+| `status`      | `TEXT`    | Tracks the current state of the task. It cannot be empty and defaults to `'To-do'`. The `CHECK` constraint restricts values to `To-do`, `In-Progress`, or `Completed`.                                                                 |
+| `dueDate`     | `TEXT`    | Stores the task's deadline. It is required (`NOT NULL`). Since SQLite does not have a dedicated date type, the date is stored as text (commonly in `YYYY-MM-DD` or ISO 8601 format).                                                   |
+| `createdAt`   | `TEXT`    | Records when the task was created. It is required and automatically defaults to the current date and time using `datetime('now')`.                                                                                                     |
+| `archived`    | `INTEGER` | Indicates whether a task has been archived. It defaults to `0` (not archived). The `CHECK` constraint ensures the value is either `0` (false) or `1` (true).                                                                           |
+
