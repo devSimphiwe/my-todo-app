@@ -2,6 +2,35 @@
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+
+---
+
+# Node.js Version Requirement
+
+This project requires **Node.js v20.9.0 or higher** (required by Next.js 16).
+
+If you are running an older version, you can update using **nvm (Node Version Manager)**:
+
+```bash
+# Install nvm (if not already installed)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+source ~/.bashrc
+
+# Install and switch to Node 20
+nvm install 20
+nvm use 20
+nvm alias default 20
+
+# Verify installation
+node -v
+
+# Start the development server
+npm run dev
+```
+
+---
+
+
 # How to Clone the Repository
 
 To clone and set up the **my-todo-app** project on your local machine, follow these steps:
@@ -43,32 +72,6 @@ npm run dev
 
 Open **http://localhost:3000** with your browser to see the application.
 
----
-
-# Node.js Version Requirement
-
-This project requires **Node.js v20.9.0 or higher** (required by Next.js 16).
-
-If you are running an older version, you can update using **nvm (Node Version Manager)**:
-
-```bash
-# Install nvm (if not already installed)
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-source ~/.bashrc
-
-# Install and switch to Node 20
-nvm install 20
-nvm use 20
-nvm alias default 20
-
-# Verify installation
-node -v
-
-# Start the development server
-npm run dev
-```
-
----
 
 # Packages
 
