@@ -66,7 +66,7 @@ export function editTask(data: UpdateTaskData) {
 // UPDATE STATUS
 export function updateTaskStatus(id: number, status: Task['status']) {
   const stmt = db.prepare('UPDATE tasks SET status = ? WHERE id = ?');
-  stmt.run(status, id);
+  const info = stmt.run(status, id);
   return info.changes;
 }
 
