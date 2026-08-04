@@ -110,3 +110,4 @@ This project only uses 1 table i.e. tasks:
 | `createdAt`   | `TEXT`    | Records when the task was created. It is required and automatically defaults to the current date and time using `datetime('now')`.                                                                                                     |
 | `archived`    | `INTEGER` | Indicates whether a task has been archived. It defaults to `0` (not archived). The `CHECK` constraint ensures the value is either `0` (false) or `1` (true).                                                                           |
 
+AI Declaration: The preceding document was reviewed and edited with : Gemini flash and GPT-5.5.
